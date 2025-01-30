@@ -8,8 +8,8 @@ const walletSchema = new mongoose.Schema({
   },
   transactions: [
     {
-      type: { type: String, enum: ['fund', 'rental_income'], required: true },
-      amount: { type: Number, required: true },
+      type: { type: String, enum: ['fund', 'rental_income', 'investment'] },
+      amount: { type: Number, default: 0},
       date: { type: Date, default: Date.now }
     }
   ]

@@ -1,6 +1,7 @@
 const Wallet = require('../models/Wallet');
 const Investor = require('../models/Investor');
-
+const Property = require('../models/Property');
+const Investment = require('../models/Investment');
 // Créer un wallet pour un investisseur
 const createWallet = async (req, res) => {
   const { investorId } = req.body;
@@ -129,4 +130,54 @@ const deleteWallet = async (req, res) => {
   }
 };
 
-module.exports = { createWallet, fundWallet, receiveRentalIncome, getWallets, getWalletById, updateWallet, deleteWallet };
+
+const reinvestRentalIncome = async (req, res) => {
+    try {
+        const { walletId, propertyId } = req.params;
+        const { amount } = req.body;
+
+        // Vérifier si le montant est valide
+        if (!amount || amount < 500) {
+            return res.status(400).json({ message: "Le montant doit être d'au moins 500 EUR" });
+        }
+
+        // Trouver le wallet
+        const wallet = await Wallet.findById(walletId);
+        if (!wallet) {
+            return res.status(404).json({ message: "Wallet non trouvé" });
+        }
+
+        // Vérifier si le solde du wallet est suffisant
+        if (wallet.balance < amount) {
+            return res.status(400).json({ message: "Fonds insuffisants dans le wallet" });
+        }
+
+        // Trouver la propriété
+        const property = await Property.findById(propertyId);
+        if (!property) {
+            return res.status(404).json({ message: "Propriété non trouvée" });
+        }
+
+        // Déduire le montant du wallet
+        wallet.balance -= amount;
+        wallet.transactions.push({ type: "investment", amount });
+
+        // Créer un nouvel investissement
+        const newInvestment = new Investment({
+            investor: wallet.investor,
+            property: propertyId,
+            shares: amount / property.price * 100, // Calcul de pourcentage
+            amountInvested: amount
+        });
+
+        await newInvestment.save();
+        await wallet.save();
+
+        res.status(200).json({ message: "Réinvestissement réussi", wallet, investment: newInvestment });
+    } catch (error) {
+        console.error("Erreur serveur :", error);
+        res.status(500).json({ message: "Erreur serveur", error });
+    }
+};
+
+module.exports = { createWallet, fundWallet, receiveRentalIncome, getWallets, getWalletById, updateWallet, deleteWallet,reinvestRentalIncome };

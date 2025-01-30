@@ -1,51 +1,77 @@
+const Wallet = require('../models/Wallet');
 const Property = require('../models/Property');
 const Investment = require('../models/Investment');
-const Wallet = require('../models/Wallet');
 
-// Distribuer les revenus locatifs mensuels
 const distributeRentalIncome = async (req, res) => {
-  try {
-    const { propertyId } = req.params;
+    try {
+        const { propertyId } = req.params;
+        let { amount } = req.body;
 
-    // Vérifier si la propriété existe et que le certificat de propriété est délivré
-    const property = await Property.findById(propertyId);
-    if (!property) {
-      return res.status(404).json({ message: "Propriété non trouvée." });
+        if (!amount || isNaN(amount) || amount <= 0) {
+            return res.status(400).json({ message: "Montant invalide, veuillez fournir un nombre valide." });
+        }
+
+        amount = parseFloat(amount);
+
+        // Récupérer la propriété et s'assurer qu'on peuple bien les investissements
+        const property = await Property.findById(propertyId).populate({
+            path: 'investments',
+            populate: { path: 'investor' }
+        });
+
+        if (!property) {
+            return res.status(404).json({ message: "Propriété non trouvée" });
+        }
+
+        console.log(`🔍 Propriété trouvée : ${property.name}, Nombre d'investissements: ${property.investments.length}`);
+
+        if (!property.investments || property.investments.length === 0) {
+            return res.status(400).json({ message: "Aucun investisseur trouvé pour cette propriété" });
+        }
+
+        // Vérification et calcul du total des shares
+        let totalShares = 0;
+        property.investments.forEach(investment => {
+            if (investment.shares && !isNaN(investment.shares)) {
+                totalShares += investment.shares;
+            } else {
+                console.log(`⚠️ Problème avec investment.shares :`, investment);
+            }
+        });
+
+        console.log(`📊 Total des actions (shares) : ${totalShares}`);
+
+        if (totalShares <= 0 || isNaN(totalShares)) {
+            return res.status(400).json({ message: "Erreur : Le total des actions des investisseurs est invalide. Vérifiez vos investissements." });
+        }
+
+        // Distribution des revenus locatifs aux investisseurs
+        for (let investment of property.investments) {
+            const wallet = await Wallet.findOne({ investor: investment.investor._id });
+
+            if (wallet) {
+                const investorShare = (investment.shares / totalShares) * amount;
+
+                console.log(`💰 Investor ${investment.investor._id} reçoit ${investorShare}€ (${investment.shares} actions)`);
+
+                if (isNaN(investorShare) || investorShare <= 0) {
+                    return res.status(400).json({ message: "Erreur de calcul des parts des investisseurs." });
+                }
+
+                wallet.balance += investorShare;
+                wallet.transactions.push({ type: 'rental_income', amount: investorShare });
+
+                await wallet.save();
+            } else {
+                console.log(`⚠️ Wallet non trouvé pour l'investisseur ${investment.investor._id}`);
+            }
+        }
+
+        res.status(200).json({ message: "Revenus locatifs distribués avec succès à tous les investisseurs" });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Erreur serveur", error });
     }
-
-    if (!property.ownershipCertificateDelivered) {
-      return res.status(400).json({ message: "Le certificat de propriété n'a pas encore été délivré." });
-    }
-
-    // Vérifier qu'il y a un revenu locatif défini pour cette propriété
-    if (!property.rentalIncome || property.rentalIncome <= 0) {
-      return res.status(400).json({ message: "Aucun revenu locatif défini pour cette propriété." });
-    }
-
-    // Récupérer tous les investissements dans cette propriété
-    const investments = await Investment.find({ property: propertyId }).populate('investor');
-
-    if (investments.length === 0) {
-      return res.status(400).json({ message: "Aucun investisseur pour cette propriété." });
-    }
-
-    // Distribuer le revenu à chaque investisseur en fonction de ses parts
-    for (let investment of investments) {
-      const investorWallet = await Wallet.findOne({ investor: investment.investor._id });
-      if (!investorWallet) continue;
-
-      const investorIncome = (investment.shares / 100) * property.rentalIncome;
-
-      investorWallet.balance += investorIncome;
-      investorWallet.transactions.push({ type: 'rental_income', amount: investorIncome });
-      await investorWallet.save();
-    }
-
-    res.status(200).json({ message: "Revenus locatifs distribués avec succès." });
-
-  } catch (error) {
-    res.status(500).json({ message: "Erreur serveur", error });
-  }
 };
 
 module.exports = { distributeRentalIncome };

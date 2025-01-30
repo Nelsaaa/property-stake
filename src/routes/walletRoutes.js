@@ -20,5 +20,8 @@ router.delete('/:id', walletController.deleteWallet);
 router.put('/fund/:walletId', walletController.fundWallet);
 router.put('/income/:walletId', walletController.receiveRentalIncome);
 
+router.put('/:walletId/reinvest/:propertyId', walletController.reinvestRentalIncome);
+
+
 
 module.exports = router;

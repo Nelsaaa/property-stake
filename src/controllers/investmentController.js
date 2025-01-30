@@ -1,43 +1,68 @@
 const Investment = require('../models/Investment');
 const Property = require('../models/Property');
 const Wallet = require('../models/Wallet');
+const Investor = require('../models/Investor')
+const mongoose = require('mongoose');
 
-// créer un investissement
 const createInvestment = async (req, res) => {
-  const { investorId, propertyId, shares, amountInvested } = req.body;
+    const { investorId, propertyId, shares, amountInvested } = req.body;
 
-  try {
-    const property = await Property.findById(propertyId);
-    if (!property) return res.status(404).json({ message: "Propriété non trouvée" });
+    try {
+        // 1️⃣ Vérifier si la propriété existe et récupérer son montant financé
+        const property = await Property.findById(propertyId);
+        if (!property) {
+            return res.status(404).json({ message: "Propriété non trouvée" });
+        }
 
-    if (property.status !== 'funding') {
-      return res.status(400).json({ message: "Cette propriété n'est plus ouverte au financement" });
+        if (property.status !== "funding") {
+            return res.status(400).json({ message: "Cette propriété n'est plus ouverte au financement" });
+        }
+
+        // 2️⃣ Vérifier si l’investisseur a assez d’argent
+        const wallet = await Wallet.findOne({ investor: investorId });
+        if (!wallet || wallet.balance < amountInvested) {
+            return res.status(400).json({ message: "Fonds insuffisants dans le wallet" });
+        }
+
+        // 3️⃣ Vérifier si le financement ne dépasse pas le prix total de la propriété
+        const remainingAmount = property.price - property.amountFunded;
+        if (amountInvested > remainingAmount) {
+            return res.status(400).json({ message: `Financement excessif : Il reste seulement ${remainingAmount}€ à investir.` });
+        }
+
+        // 4️⃣ Mettre à jour la propriété de manière atomique
+        const updatedProperty = await Property.findOneAndUpdate(
+            { _id: propertyId, amountFunded: { $lt: property.price } }, // Vérifie que l'update est encore valide
+            { 
+                $inc: { amountFunded: amountInvested },
+                $push: { investments: investorId }
+            },
+            { new: true }
+        );
+
+        if (!updatedProperty) {
+            return res.status(400).json({ message: "Le financement de cette propriété est déjà complet." });
+        }
+
+        // 5️⃣ Débiter le wallet de l'investisseur
+        wallet.balance -= amountInvested;
+        wallet.transactions.push({ type: "investment", amount: amountInvested });
+        await wallet.save();
+
+        // 6️⃣ Ajouter l’investissement
+        const newInvestment = new Investment({
+            investor: investorId,
+            property: propertyId,
+            shares,
+            amountInvested
+        });
+
+        await newInvestment.save();
+
+        res.status(201).json({ message: "Investissement réussi", newInvestment });
+    } catch (error) {
+        res.status(500).json({ message: "Erreur serveur", error });
     }
-
-    const newInvestment = new Investment({
-      investor: investorId,
-      property: propertyId,
-      shares,
-      amountInvested
-    });
-
-    const savedInvestment = await newInvestment.save();
-
-    // Mettre à jour le totalInvested de la propriété
-    property.totalInvested += amountInvested;
-    property.investments.push(savedInvestment._id);
-
-    //  Vérifier si la propriété est entièrement financée
-    if (property.totalInvested >= property.price) {
-      property.status = 'funded'; // Changer le statut en "funded"
-    }
-
-    await property.save();
-
-    res.status(201).json(savedInvestment);
-  } catch (error) {
-    res.status(400).json({ message: "Erreur lors de la création de l'investissement", error });
-  }
 };
 
 //  Lire tous les investissements d'un investisseur

@@ -16,6 +16,7 @@ const investorProfileRoutes = require('./routes/investorProfileRoutes');
 const rentalIncomeRoutes = require('./routes/rentalIncomeRoutes');
 
 
+
 const app = express();
 
 // Middleware pour parser le corps des requêtes en JSON

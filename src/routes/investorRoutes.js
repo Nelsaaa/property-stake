@@ -24,5 +24,8 @@ router.get('/:id/portfolio', investorController.getInvestorPortfolio);
 
 router.post('/batch', investorController.createInvestorsBatch);
 
+router.get('/:id/investments', investorController.getInvestorInvestments);
+
+
 
 module.exports = router;

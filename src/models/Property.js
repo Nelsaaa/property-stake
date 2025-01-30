@@ -7,6 +7,7 @@ const propertySchema = new mongoose.Schema({
   description: { type: String },
   price: { type: Number },
   totalInvested: { type: Number, default: 0 }, 
+  amountFunded: { type: Number, default: 0 },
   type: { 
     type: String, 
     enum: ['apartment', 'building', 'house'], 

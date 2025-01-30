@@ -105,7 +105,29 @@ const getInvestorPortfolio = async (req, res) => {
       res.status(400).json({ message: 'Erreur lors de la création des investisseurs', error });
     }
   };
+
+  const getInvestorInvestments = async (req, res) => {
+    const { id } = req.params; // Récupérer l'ID de l'investisseur
+
+    try {
+        // Vérifier si l'investisseur existe
+        const investor = await Investor.findById(id);
+        if (!investor) {
+            return res.status(404).json({ message: "Investisseur non trouvé" });
+        }
+
+        // Récupérer les investissements de cet investisseur avec les détails des propriétés
+        const investments = await Investment.find({ investor: id }).populate('property');
+
+        // Retourner les investissements trouvés
+        res.status(200).json(investments);
+    } catch (error) {
+        console.error("Erreur lors de la récupération des investissements :", error);
+        res.status(500).json({ message: "Erreur lors de la récupération des investissements", error });
+    }
+};
+
   
   
 
-module.exports = { createInvestor, getAllInvestors, getInvestorById, updateInvestor, deleteInvestor,getInvestorPortfolio, createInvestorsBatch };
+module.exports = { createInvestor, getAllInvestors, getInvestorById, updateInvestor, deleteInvestor,getInvestorPortfolio, createInvestorsBatch, getInvestorInvestments };
