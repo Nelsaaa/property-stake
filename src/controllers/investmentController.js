@@ -3,22 +3,23 @@ const Investment = require('../models/Investment');
 
 // Créer un investissement
 const createInvestment = async (req, res) => {
-  const { investorId, propertyId, shares, amountInvested } = req.body;
-
-  const newInvestment = new Investment({
-    investor: investorId,
-    property: propertyId,
-    shares,
-    amountInvested
-  });
-
-  try {
-    const savedInvestment = await newInvestment.save();
-    res.status(201).json(savedInvestment); // Réponse avec l'investissement créé
-  } catch (error) {
-    res.status(400).json({ message: 'Erreur lors de la création de l\'investissement', error });
-  }
-};
+    const { investorId, propertyId, shares, amountInvested } = req.body;
+  
+    const newInvestment = new Investment({
+      investor: investorId,
+      property: propertyId,
+      shares,
+      amountInvested
+    });
+  
+    try {
+      const savedInvestment = await newInvestment.save();
+      res.status(201).json(savedInvestment); // Réponse avec l'investissement créé
+    } catch (error) {
+      res.status(400).json({ message: 'Erreur lors de la création de l\'investissement', error });
+    }
+  };
+  
 
 // Lire tous les investissements d'un investisseur
 const getInvestments = async (req, res) => {
@@ -75,5 +76,7 @@ const deleteInvestment = async (req, res) => {
     res.status(400).json({ message: 'Erreur lors de la suppression de l\'investissement', error });
   }
 };
+
+
 
 module.exports = { createInvestment, getInvestments, getInvestmentById, updateInvestment, deleteInvestment };

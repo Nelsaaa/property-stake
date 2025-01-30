@@ -1,5 +1,6 @@
 // src/controllers/investorController.js
 const Investor = require('../models/Investor');
+const Investment = require('../models/Investment')
 
 // Créer un investisseur
 const createInvestor = async (req, res) => {
@@ -73,6 +74,38 @@ const deleteInvestor = async (req, res) => {
   } catch (error) {
     res.status(400).json({ message: 'Erreur lors de la suppression de l\'investisseur', error });
   }
+
 };
 
-module.exports = { createInvestor, getAllInvestors, getInvestorById, updateInvestor, deleteInvestor };
+const getInvestorPortfolio = async (req, res) => {
+    const { id } = req.params; // Récupérer l'ID de l'investisseur depuis l'URL
+  
+    try {
+      // Vérifier si l'investisseur existe
+      const investor = await Investor.findById(id);
+      if (!investor) {
+        return res.status(404).json({ message: 'Investisseur non trouvé' });
+      }
+  
+      // Récupérer les investissements de l'investisseur
+      const investments = await Investment.find({ investor: id }).populate('property');
+  
+      // Retourner la liste des investissements avec les propriétés associées
+      res.status(200).json(investments);
+    } catch (error) {
+      res.status(400).json({ message: 'Erreur lors de la récupération du portfolio', error });
+    }
+  };
+
+  const createInvestorsBatch = async (req, res) => {
+    try {
+      const investors = await Investor.insertMany(req.body);
+      res.status(201).json(investors);
+    } catch (error) {
+      res.status(400).json({ message: 'Erreur lors de la création des investisseurs', error });
+    }
+  };
+  
+  
+
+module.exports = { createInvestor, getAllInvestors, getInvestorById, updateInvestor, deleteInvestor,getInvestorPortfolio, createInvestorsBatch };

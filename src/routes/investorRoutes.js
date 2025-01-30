@@ -20,4 +20,9 @@ router.put('/:id', investorController.updateInvestor);
 // Supprimer un investisseur
 router.delete('/:id', investorController.deleteInvestor);
 
+router.get('/:id/portfolio', investorController.getInvestorPortfolio);
+
+router.post('/batch', investorController.createInvestorsBatch);
+
+
 module.exports = router;
