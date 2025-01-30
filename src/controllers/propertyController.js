@@ -1,4 +1,5 @@
 const Property = require('../models/Property');  
+const Agent = require('../models/Agent');
 
 // Créer une propriété
 const createProperty = async (req, res) => {
@@ -170,4 +171,22 @@ const refundInvestors = async (property) => {
 setInterval(checkFundingDeadlines, 24 * 60 * 60 * 1000);
 
 
-module.exports = { createProperty, getProperties, getPropertyById, updateProperty, deleteProperty, getOpenProperties, createMultipleProperties, checkFundingDeadlines, refundInvestors};
+const checkAgent = async (req, res, next) => {
+  try {
+    
+    const agentId = req.headers['x-agent-id'];  
+    if (!agentId) {
+      return res.status(401).json({ message: "Pas d'agent ID fourni" });
+    }
+    const agent = await Agent.findById(agentId);
+    if (!agent) {
+      return res.status(403).json({ message: "Accès refusé, agent non trouvé" });
+    }
+    // Si OK
+    next();
+  } catch (error) {
+    res.status(500).json({ message: "Erreur middleware agent", error });
+  }
+};
+
+module.exports = { createProperty, getProperties, getPropertyById, updateProperty, deleteProperty, getOpenProperties, createMultipleProperties, checkFundingDeadlines, refundInvestors,checkAgent};

@@ -2,8 +2,16 @@
 const express = require('express');
 const router = express.Router();
 
+
+
 // Importer le contrôleur d'investisseur
 const investorController = require('../controllers/investorController');
+const checkAuth = require('../middleware/checkAuth');
+
+// Inscription
+router.post('/register', investorController.registerInvestor);
+// Connexion
+router.post('/login', investorController.loginInvestor);
 
 // Créer un investisseur
 router.post('/', investorController.createInvestor);
@@ -15,12 +23,12 @@ router.get('/', investorController.getAllInvestors);
 router.get('/:id', investorController.getInvestorById);
 
 // Mettre à jour un investisseur
-router.put('/:id', investorController.updateInvestor);
+router.put('/:id',checkAuth, investorController.updateInvestor);
 
 // Supprimer un investisseur
 router.delete('/:id', investorController.deleteInvestor);
 
-router.get('/:id/portfolio', investorController.getInvestorPortfolio);
+router.get('/:id/portfolio', checkAuth, investorController.getInvestorPortfolio);
 
 router.post('/batch', investorController.createInvestorsBatch);
 

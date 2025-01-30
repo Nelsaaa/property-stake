@@ -1,7 +1,61 @@
 // src/controllers/investorController.js
 const Investor = require('../models/Investor');
 const Investment = require('../models/Investment')
+const jwt = require('jsonwebtoken');
 
+
+const registerInvestor = async (req, res) => {
+    try {
+      const { name, email, password } = req.body;
+  
+      // Vérifier si l'email existe déjà
+      const existing = await Investor.findOne({ email });
+      if (existing) {
+        return res.status(400).json({ message: "Un investisseur avec cet email existe déjà" });
+      }
+  
+      // Créer l'investisseur
+      const investor = new Investor({ name, email, password });
+      await investor.save();
+  
+      // Réponse de succès
+      return res.status(201).json({ message: "Inscription réussie", investor });
+    } catch (error) {
+      console.error("Erreur lors de l'inscription:", error);
+
+      return res.status(500).json({
+        message: "Erreur lors de l'inscription",
+        error: error.message
+      });
+    }
+  };
+  
+  const loginInvestor = async (req, res) => {
+    try {
+      const { email, password } = req.body;
+      const investor = await Investor.findOne({ email });
+      if (!investor) {
+        return res.status(404).json({ message: "Investisseur introuvable" });
+      }
+  
+      const isMatch = await investor.comparePassword(password);
+      if (!isMatch) {
+        return res.status(400).json({ message: "Mot de passe incorrect" });
+      }
+  
+      // Générer un token JWT (clé secrète dans .env)
+      const token = jwt.sign(
+        { investorId: investor._id }, 
+        process.env.JWT_SECRET, 
+        { expiresIn: '1d' }
+      );
+  
+      res.status(200).json({ message: "Connexion réussie", token });
+    } catch (error) {
+      res.status(500).json({ message: "Erreur de connexion", error });
+    }
+  };
+  
 // Créer un investisseur
 const createInvestor = async (req, res) => {
   const { name, email, walletId } = req.body;
@@ -130,4 +184,4 @@ const getInvestorPortfolio = async (req, res) => {
   
   
 
-module.exports = { createInvestor, getAllInvestors, getInvestorById, updateInvestor, deleteInvestor,getInvestorPortfolio, createInvestorsBatch, getInvestorInvestments };
+module.exports = { createInvestor, getAllInvestors, getInvestorById, updateInvestor, deleteInvestor,getInvestorPortfolio, createInvestorsBatch, getInvestorInvestments, registerInvestor, loginInvestor };

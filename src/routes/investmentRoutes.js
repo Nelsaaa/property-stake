@@ -2,9 +2,10 @@
 const express = require('express');
 const router = express.Router();
 const investmentController = require('../controllers/investmentController');
+const checkAuth = require('../middleware/checkAuth');
 
 // Créer un investissement
-router.post('/', investmentController.createInvestment);
+router.post('/',checkAuth, investmentController.createInvestment);
 
 // Récupérer tous les investissements
 router.get('/', investmentController.getInvestments);
@@ -13,10 +14,12 @@ router.get('/', investmentController.getInvestments);
 router.get('/:id', investmentController.getInvestmentById);
 
 // Mettre à jour un investissement
-router.put('/:id', investmentController.updateInvestment);
+router.put('/:id',checkAuth, investmentController.updateInvestment);
 
 // Supprimer un investissement
-router.delete('/:id', investmentController.deleteInvestment);
+router.delete('/:id', checkAuth, investmentController.deleteInvestment);
+
+
 
 module.exports = router;
 

@@ -14,7 +14,7 @@ const paymentRoutes = require('./routes/paymentRoutes');
 const emailRoutes = require('./routes/emailRoutes');
 const investorProfileRoutes = require('./routes/investorProfileRoutes');
 const rentalIncomeRoutes = require('./routes/rentalIncomeRoutes');
-
+const agentRoutes = require('./routes/agentRoutes');
 
 
 const app = express();
@@ -52,6 +52,7 @@ app.use('/payment', paymentRoutes);
 app.use('/email', emailRoutes); 
 app.use('/investors', investorProfileRoutes);
 app.use('/rental-income', rentalIncomeRoutes);
+app.use('/agents', agentRoutes); 
 
 // Démarrer le serveur
 app.listen(5001, () => {

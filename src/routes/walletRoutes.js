@@ -1,9 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const walletController = require('../controllers/walletController');
+const checkAuth = require('../middleware/checkAuth');
 
 // Créer un wallet
-router.post('/', walletController.createWallet);
+router.post('/',checkAuth, walletController.createWallet);
 
 // Récupérer tous les wallets
 router.get('/', walletController.getWallets);
@@ -12,15 +13,15 @@ router.get('/', walletController.getWallets);
 router.get('/:id', walletController.getWalletById);
 
 // Mettre à jour un wallet
-router.put('/:id', walletController.updateWallet);
+router.put('/:id',checkAuth, walletController.updateWallet);
 
 // Supprimer un wallet
-router.delete('/:id', walletController.deleteWallet);
+router.delete('/:id', checkAuth, walletController.deleteWallet);
 
-router.put('/fund/:walletId', walletController.fundWallet);
-router.put('/income/:walletId', walletController.receiveRentalIncome);
+router.put('/fund/:walletId',checkAuth, walletController.fundWallet);
+router.put('/income/:walletId',checkAuth, walletController.receiveRentalIncome);
 
-router.put('/:walletId/reinvest/:propertyId', walletController.reinvestRentalIncome);
+router.put('/:walletId/reinvest/:propertyId',checkAuth, walletController.reinvestRentalIncome);
 
 
 
