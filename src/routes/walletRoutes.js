@@ -17,4 +17,8 @@ router.put('/:id', walletController.updateWallet);
 // Supprimer un wallet
 router.delete('/:id', walletController.deleteWallet);
 
+router.put('/fund/:walletId', walletController.fundWallet);
+router.put('/income/:walletId', walletController.receiveRentalIncome);
+
+
 module.exports = router;

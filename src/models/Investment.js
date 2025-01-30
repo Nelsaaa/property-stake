@@ -11,8 +11,8 @@ const investmentSchema = new mongoose.Schema({
     ref: 'Property',
     
   },
-  amountInvested: { type: Number, required: true },
-  shares: { type: Number, required: true },
+  amountInvested: { type: Number },
+  shares: { type: Number },
   dateInvested: { type: Date, default: Date.now }
 });
 

@@ -113,5 +113,61 @@ const createMultipleProperties = async (req, res) => {
   }
 };
 
+const checkFundingDeadlines = async () => {
+  try {
+    const now = new Date();
+    
+    // Trouver les propriétés en "funding" dont la date limite est dépassée
+    const expiredProperties = await Property.find({
+      status: 'funding',
+      fundingDeadline: { $lt: now }
+    }).populate('investments');
 
-module.exports = { createProperty, getProperties, getPropertyById, updateProperty, deleteProperty, getOpenProperties, createMultipleProperties};
+    for (const property of expiredProperties) {
+      console.log(`Propriété expirée détectée: ${property.name}`);
+
+      if (property.totalInvested < property.price) {
+        await refundInvestors(property);
+        property.status = 'closed';  // Fermer la propriété si elle n'est pas financée
+      } else {
+        property.status = 'funded';  // Si financée à 100%, elle devient "funded"
+      }
+
+      await property.save();
+    }
+  } catch (error) {
+    console.error("Erreur lors de la vérification des délais de financement:", error);
+  }
+};
+
+const refundInvestors = async (property) => {
+  try {
+    for (const investmentId of property.investments) {
+      const investment = await Investment.findById(investmentId).populate('investor');
+
+      if (!investment) continue;
+
+      // Trouver le wallet de l'investisseur
+      const wallet = await Wallet.findOne({ investor: investment.investor._id });
+
+      if (wallet) {
+        wallet.balance += investment.amountInvested;
+        wallet.transactions.push({ type: 'refund', amount: investment.amountInvested });
+        await wallet.save();
+      }
+
+      console.log(` Remboursement de ${investment.amountInvested}€ à ${investment.investor.email}`);
+
+      // Supprimer l'investissement après remboursement
+      await Investment.findByIdAndDelete(investmentId);
+    }
+  } catch (error) {
+    console.error("Erreur lors du remboursement des investisseurs:", error);
+  }
+};
+
+// Planifier l'exécution de `checkFundingDeadlines` toutes les 24 heures
+setInterval(checkFundingDeadlines, 24 * 60 * 60 * 1000);
+
+
+module.exports = { createProperty, getProperties, getPropertyById, updateProperty, deleteProperty, getOpenProperties, createMultipleProperties, checkFundingDeadlines, refundInvestors};

@@ -12,6 +12,9 @@ const propertyRoutes = require('./routes/propertyRoutes');
 const walletRoutes = require('./routes/walletRoutes');
 const paymentRoutes = require('./routes/paymentRoutes');
 const emailRoutes = require('./routes/emailRoutes');
+const investorProfileRoutes = require('./routes/investorProfileRoutes');
+const rentalIncomeRoutes = require('./routes/rentalIncomeRoutes');
+
 
 const app = express();
 
@@ -44,8 +47,10 @@ app.use('/investments', investmentRoutes);
 app.use('/transactions', transactionRoutes);
 app.use('/properties', propertyRoutes);
 app.use('/wallets', walletRoutes);
-app.use('/payment', paymentRoutes); // Route pour les paiements
-app.use('/email', emailRoutes);     // Route pour les emails
+app.use('/payment', paymentRoutes);
+app.use('/email', emailRoutes); 
+app.use('/investors', investorProfileRoutes);
+app.use('/rental-income', rentalIncomeRoutes);
 
 // Démarrer le serveur
 app.listen(5001, () => {
