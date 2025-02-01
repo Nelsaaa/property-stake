@@ -1,0 +1,702 @@
+{
+	"info": {
+		"_postman_id": "9a1024a3-6fbc-47c1-aceb-0de5dce7af66",
+		"name": "PropertyStake_API",
+		"description": "_Collection de requêtes pour tester l'API du projet ST2SSA - Fractional Property Ownership System\"_.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "27826333"
+	},
+	"item": [
+		{
+			"name": "Investor",
+			"item": [
+				{
+					"name": "consultation du portfolio d'un investisseur",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "Créer plusieurs investisseurs",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[\n  {\n    \"name\": \"Alice Dupont\",\n    \"email\": \"alice@example.com\",\n    \"password\": \"securepass\"\n  },\n  {\n    \"name\": \"Bob Martin\",\n    \"email\": \"bob@example.com\",\n    \"password\": \"strongpass\"\n  },\n  {\n    \"name\": \"Nelsa Yago\",\n    \"email\": \"nelsa@example.com\",\n    \"password\": \"securepass\"\n  }\n\n]\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5001/investors/batch",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5001",
+							"path": [
+								"investors",
+								"batch"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Consulter le Portfolio",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "register",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"John Doe\",\n  \"email\": \"john@example.com\",\n  \"password\": \"secret\"\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5001/investors/register",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5001",
+							"path": [
+								"investors",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"john@example.com\",\n  \"password\": \"secret\"\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5001/investors/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5001",
+							"path": [
+								"investors",
+								"login"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Wallet",
+			"item": [
+				{
+					"name": "Créer un wallet pour un investisseur",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"investorId\": \"679ac97136db0c19902f12d0\"\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5001/wallets",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5001",
+							"path": [
+								"wallets"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Provisionner de l’argent dans un wallet",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"amount\": 5000\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5001/wallets/fund/679b6a8090a2e533d304eec3",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5001",
+							"path": [
+								"wallets",
+								"fund",
+								"679b6a8090a2e533d304eec3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Ajouter des revenus",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"amount\": 5000\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5001/wallets/income/679b6a8090a2e533d304eec3",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5001",
+							"path": [
+								"wallets",
+								"income",
+								"679b6a8090a2e533d304eec3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "verifier solde",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "Reinvestissement",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"amount\": 1000\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5001/wallets/679b6a8090a2e533d304eec3/reinvest/679ac30847cc5ffcc3ffd34f",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5001",
+							"path": [
+								"wallets",
+								"679b6a8090a2e533d304eec3",
+								"reinvest",
+								"679ac30847cc5ffcc3ffd34f"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Property",
+			"item": [
+				{
+					"name": "Créer une Propriété (POST)",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Luxury Apartment\",\n  \"description\": \"A beautiful apartment in downtown\",\n  \"price\": 200000,\n  \"type\": \"apartment\",\n  \"fundingDeadline\": \"2025-06-01T00:00:00Z\"\n}\n{\n  \"name\": \"Modern Villa\",\n  \"description\": \"A luxurious villa by the beach\",\n  \"price\": 350000,\n  \"type\": \"house\",\n  \"status\": \"funding\",\n  \"fundingDeadline\": \"2025-08-01T00:00:00.000Z\"\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5001/properties/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5001",
+							"path": [
+								"properties",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Lister les Propriétés Ouvertes pour Financement (GET)",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5001/properties/open-for-funding",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5001",
+							"path": [
+								"properties",
+								"open-for-funding"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Mettre à Jour une Propriété (PUT)",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"price\": 250000\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5001/properties/679ab4ebeccda61dff739d2d",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5001",
+							"path": [
+								"properties",
+								"679ab4ebeccda61dff739d2d"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Supprimer une Propriété (DELETE)",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5001/properties/679abec147cc5ffcc3ffd343",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5001",
+							"path": [
+								"properties",
+								"679abec147cc5ffcc3ffd343"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "creer plusieurs propriétés",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[\n  {\n    \"name\": \"Luxury Apartment\",\n    \"description\": \"A beautiful apartment in downtown\",\n    \"price\": 200000,\n    \"type\": \"apartment\",\n    \"fundingDeadline\": \"2025-06-01T00:00:00Z\"\n  },\n  {\n    \"name\": \"Modern Villa\",\n    \"description\": \"A luxurious villa by the beach\",\n    \"price\": 350000,\n    \"type\": \"house\",\n    \"status\": \"funding\",\n    \"fundingDeadline\": \"2025-08-01T00:00:00.000Z\"\n  },\n  {\n    \"name\": \"Penthouse\",\n    \"description\": \"High-end penthouse with sea view\",\n    \"price\": 500000,\n    \"type\": \"apartment\",\n    \"status\": \"funding\",\n    \"fundingDeadline\": \"2025-07-15T00:00:00.000Z\"\n  },\n  {\n    \"name\": \"Country House\",\n    \"description\": \"A charming house in the countryside\",\n    \"price\": 150000,\n    \"type\": \"house\",\n    \"status\": \"funding\",\n    \"fundingDeadline\": \"2025-09-10T00:00:00.000Z\"\n  },\n  {\n    \"name\": \"City Loft\",\n    \"description\": \"Modern loft in the city center\",\n    \"price\": 220000,\n    \"type\": \"apartment\",\n    \"status\": \"funding\",\n    \"fundingDeadline\": \"2025-07-20T00:00:00.000Z\"\n  },\n  {\n    \"name\": \"Beach Bungalow\",\n    \"description\": \"Small cozy bungalow by the beach\",\n    \"price\": 180000,\n    \"type\": \"house\",\n    \"status\": \"funding\",\n    \"fundingDeadline\": \"2025-08-25T00:00:00.000Z\"\n  },\n  {\n    \"name\": \"Downtown Studio\",\n    \"description\": \"Compact studio in a prime location\",\n    \"price\": 130000,\n    \"type\": \"apartment\",\n    \"status\": \"funding\",\n    \"fundingDeadline\": \"2025-07-05T00:00:00.000Z\"\n  },\n  {\n    \"name\": \"Apartment\",\n    \"description\": \"A beautiful apartment in downtown\",\n    \"price\": 200000,\n    \"type\": \"apartment\",\n    \"fundingDeadline\": \"2025-06-01T00:00:00Z\"\n  }\n]\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5001/properties/batch",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5001",
+							"path": [
+								"properties",
+								"batch"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Créer une propriété avec une deadline de financement",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Modern Villa\",\n  \"description\": \"Une villa moderne avec piscine\",\n  \"price\": 1000000,\n  \"type\": \"house\",\n  \"fundingDeadline\": \"2025-06-01T00:00:00Z\"\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5001/properties",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5001",
+							"path": [
+								"properties"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Vérifier les propriétés expirées",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5001/properties",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5001",
+							"path": [
+								"properties"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Mettre à jour la propriété pour activer les paiements",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"ownershipCertificateDelivered\": true,\n  \"rentalIncome\": 5000\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5001/properties/679abdde47cc5ffcc3ffd336",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5001",
+							"path": [
+								"properties",
+								"679abdde47cc5ffcc3ffd336"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Distribuer les revenus locatifs aux investisseurs",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"amount\": 5000\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5001/rental-income/679abdde47cc5ffcc3ffd336/distribute-rental-income",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5001",
+							"path": [
+								"rental-income",
+								"679abdde47cc5ffcc3ffd336",
+								"distribute-rental-income"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Payment (Stripe)",
+			"item": [
+				{
+					"name": "faire un paiement",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Investment",
+			"item": [
+				{
+					"name": "Investir dans une propriété",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"investor\": \"679ac97136db0c19902f12cf\",\n  \"property\": \"679ac30847cc5ffcc3ffd34e\",\n  \"amountInvested\": 10000,\n  \"shares\": 2\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5001/investments",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5001",
+							"path": [
+								"investments"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Faire un investissement",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"investorId\": \"679ac97136db0c19902f12cf\",\n  \"propertyId\": \"679abdde47cc5ffcc3ffd336\",\n  \"amountInvested\": 100000\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5001/investments",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5001",
+							"path": [
+								"investments"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get investor investment",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5001/investors/679ac97136db0c19902f12cf/investments",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5001",
+							"path": [
+								"investors",
+								"679ac97136db0c19902f12cf",
+								"investments"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Agent",
+			"item": [
+				{
+					"name": "Créer un agent",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{ \"fullName\": \"Alice Agent\", \"email\": \"alice@agent.com\", \"password\": \"password\" }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5001/agents/register",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5001",
+							"path": [
+								"agents",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "login agent",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{ \"email\": \"alice@agent.com\", \"password\": \"password\" }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5001/agents/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5001",
+							"path": [
+								"agents",
+								"login"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Email",
+			"item": [
+				{
+					"name": "send email",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"to\": \"destinataire@example.com\",\n  \"subject\": \"Hello from PropertyStake\",\n  \"text\": \"Ceci est un email de test\"\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5001/email/send",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5001",
+							"path": [
+								"email",
+								"send"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
