@@ -102,9 +102,3 @@ Pour faciliter les tests, un fichier **`PropertyStake_API.postman_collection.jso
 3. Sélectionner le fichier `.json`  
 4. Les requêtes apparaissent dans la collection **PropertyStake**.
 
-## 7. **Remarques**
-
-- **Stripe** : l’intégration est en mode test. Tu peux utiliser `tok_visa` comme token de test.  
-- **Mailtrap** : tu verras les emails dans [mailtrap.io](https://mailtrap.io/).  
-- **Sécurité** : Pour un POC, les mots de passe ne sont pas forcément hashés (ou le sont via `bcrypt` si configuré).  
-- **Scalabilité** : les exemples de transactions et de file d’attente (BullMQ, etc.) sont indicatifs.  
